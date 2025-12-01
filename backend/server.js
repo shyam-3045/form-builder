@@ -10,7 +10,7 @@ const cookieParser = require("cookie-parser");
 const PORT = process.env.PORT || 5000;
 
 app.use(cors({ 
-       origin: process.env.FRONTEND_URL,    
+       origin: process.env.FRONTEND_URL.split(","),    
        credentials: true
   })
 )

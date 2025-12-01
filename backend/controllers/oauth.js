@@ -84,7 +84,7 @@ exports.oauthCallback=async(req,res)=>
 
         const credentials = Buffer.from(process.env.AIRTABLE_CLIENT_ID + ":" + process.env.AIRTABLE_CLIENT_SECRET ).toString("base64")
 
-        const token= await axios.post("https://airtable.com/oauth2/v1/token", new URLSearchParams({
+        const token= await axios.post(process.env.AIRTABLE_TOKEN_URL, new URLSearchParams({
             code : code,
             client_id : process.env.AIRTABLE_CLIENT_ID,
             redirect_uri : process.env.AIRTABLE_REDIRECT_URI,
