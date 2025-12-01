@@ -6,47 +6,59 @@ const shouldShowQuestion = (rules , answeredSoFar)=>
     }
 
     const checkCondition = rules.conditions.map(c => {
-    const answer = answeredSoFar[c.questionKey]
+        let answer = answeredSoFar[c.questionKey]
 
-    if (answer === undefined || answer === null) 
-    {
+        if (answer === undefined || answer === null) 
+        {
+            return false
+        }
+
+        if (typeof answer === "string") {
+            answer = answer.toLowerCase()
+        }
+
+        let value = c.value
+        if (typeof value === "string") {
+            value = value.toLowerCase()
+        }
+
+        if (c.operator === "equals") 
+        {
+            return answer === value
+        }
+
+        if (c.operator === "notEquals") 
+        {
+            return answer !== value
+        }
+
+        if (c.operator === "contains") {
+            if (Array.isArray(answer)) 
+            {
+                return answer.map(v =>
+                  typeof v === "string" ? v.toLowerCase() : v
+                ).includes(value)
+            }
+            if (typeof answer === "string") 
+            {
+                return answer.includes(value)
+            }
+            return false
+        }
+
         return false
-    }
-        
+    })
 
-    if (c.operator === "equals") 
+    if (rules.logic === "AND") 
     {
-        return answer === c.value
+        return checkCondition.every(Boolean)
     }
-    if (c.operator === "notEquals") 
+    if (rules.logic === "OR") 
     {
-        return answer !== c.value
+        return checkCondition.some(Boolean)
     }
 
-    if (c.operator === "contains") {
-      if (Array.isArray(answer)) 
-      {
-        return answer.includes(c.value)
-      }
-      if (typeof answer === "string") 
-      {
-        return answer.includes(c.value)
-      }
-      return false
-    }
-
-    return false
-  })
-  if (rules.logic === "AND") 
-  {
-    return checkCondition.every(Boolean)
-  }
-  if (rules.logic === "OR") {
-    return checkCondition.some(Boolean)
-  }
-
-  return true
-
+    return true
 }
 
 module.exports = shouldShowQuestion
