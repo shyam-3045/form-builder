@@ -20,7 +20,7 @@ app.use(cookieParser())
 app.use(express.json())
 
 app.get("/", (req, res) => {
-  res.status(200).send("OK");
+  res.status(200).send("Ok");
 });
 app.use("/auth",require("./routes/oauth"))
 app.use("/airtable",require("./routes/bases"))
