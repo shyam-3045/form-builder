@@ -86,39 +86,48 @@ exports.submitForm=async(req,res)=>
             {
                 return res.status(400).json({ok:false,msg:"required questions are missing"})
             }
-
-            if (ques.type === "singleSelect") {
-                if (value !== undefined) {
-                    const allowed = ques.options.choices.map(c => c.name)
-                    if (!allowed.includes(value)) {
-                     return res.status(400).json({ok: false,msg: "Invalid single select value"})
-                    }
-                }
-            }
-
-            if (ques.type === "multiSelect") {
-                if (value !== undefined) {
-                    if (!Array.isArray(value)) {
-                        return res.status(400).json({ok: false,msg: "Invalid multi select value"})
-                    }
-
-                    const allowed = ques.options.choices.map(c => c.name)
-                    const invalid = value.filter(v => !allowed.includes(v))
-
-                    if (invalid.length > 0) {
-                        return res.status(400).json({ok: false,msg: "Invalid multi select value"})
-                    }
-                }
-            }
-            
         }
+
+        if (ques.type === "singleSelect") {
+            if (value !== undefined) {
+                const allowed = ques.options.choices.map(c => c.name)
+                if (!allowed.includes(value)) {
+                    return res.status(400).json({
+                        ok: false,
+                        msg: "Invalid single select value"
+                    })
+                }
+            }
+        }
+
+        if (ques.type === "multiSelect") {
+            if (value !== undefined) {
+                if (!Array.isArray(value)) {
+                    return res.status(400).json({
+                        ok: false,
+                        msg: "Invalid multi select value"
+                    })
+                }
+
+                const allowed = ques.options.choices.map(c => c.name)
+                const invalid = value.filter(v => !allowed.includes(v))
+
+                if (invalid.length > 0) {
+                    return res.status(400).json({
+                        ok: false,
+                        msg: "Invalid multi select value"
+                    })
+                }
+            }
+        }
+
 
         const fields={}
         for(const ques of visibleQuestions)
         {
             fields[ques.fieldId] = answers[ques.questionKey]
         }
-        
+        console.log("FINAL FIELD PAYLOAD:", JSON.stringify(fields))
 
         const response = await axios.post(`https://api.airtable.com/v0/${form.airtableBaseID}/${form.airtableTableID}`,
             {
