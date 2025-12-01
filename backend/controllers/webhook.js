@@ -2,6 +2,9 @@ const Response = require("../models/FormResponse");
 
 exports.airtableWebhook = async (req, res) => {
   try {
+    if (!req.body || !req.body.payloads) {
+      return res.status(200).json({ ok: true })
+    }
     const payloads = req.body?.payloads || [];
 
     for (const payload of payloads) {
