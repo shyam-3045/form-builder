@@ -8,8 +8,7 @@ exports.webhookConnection = async(accessToken)=>
         specification: {
         options: {
             filters: {
-            dataTypes: ["tableData"],
-            recordChangeScope:"tbliFxvwhuakqtxX2"
+            dataTypes: ["tableData"]
             },
         },
         },

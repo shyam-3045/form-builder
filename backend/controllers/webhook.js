@@ -5,6 +5,7 @@ exports.airtableWebhook = async (req, res) => {
     if (!req.body || !req.body.payloads) {
       return res.status(200).json({ ok: true })
     }
+    console.log("WEBHOOK HIT", JSON.stringify(req.body, null, 2))
     const payloads = req.body?.payloads || [];
 
     for (const payload of payloads) {
