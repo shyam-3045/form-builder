@@ -126,25 +126,25 @@ exports.oauthCallback=async(req,res)=>
     )
  
 
-      // const webhookExists = await webhook.findOne({
-      //   owner : user._id,
-      //   baseID: process.env.WEBHOOK_BASE_ID
-      // })
+      const webhookExists = await webhook.findOne({
+        owner : user._id,
+        baseID: process.env.WEBHOOK_BASE_ID
+      })
       
-      // if(! webhookExists)
-      // {
-      //   const WebHook = await webhookConnection(accessToken)
-      //   console.log("Webhook :",WebHook)
+      if(! webhookExists)
+      {
+        const WebHook = await webhookConnection(accessToken)
+        console.log("Webhook :",WebHook)
 
-      //   await webhook.create({
-      //     baseID: process.env.WEBHOOK_BASE_ID,
-      //     tableID: process.env.WEBHOOK_TABLE_ID,
-      //     webhookID: WebHook.id,
-      //     expirationTime: WebHook.expirationTime,
-      //     macSecretBase64: WebHook.macSecretBase64,
-      //     owner: user._id
-      //   })
-      // }
+        await webhook.create({
+          baseID: process.env.WEBHOOK_BASE_ID,
+          tableID: process.env.WEBHOOK_TABLE_ID,
+          webhookID: WebHook.id,
+          expirationTime: WebHook.expirationTime,
+          macSecretBase64: WebHook.macSecretBase64,
+          owner: user._id
+        })
+      }
 
 
      
