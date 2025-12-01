@@ -2,7 +2,11 @@ import api from "../../utils/config/axios"
 
 export const getMyForms = async (formID)=>
 {
-    const res = await api.get(`/airtable/form/${formID}`)
+    const res = await api.get(`/airtable/form/${formID}`,
+        {
+            withCredentials:true
+        }
+    )
     return res.data
 }
 

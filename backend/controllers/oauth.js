@@ -151,7 +151,8 @@ exports.oauthCallback=async(req,res)=>
 
       res.cookie("app_user_id",user._id.toString(),{
         httpOnly:true,
-        sameSite:"lax",
+        sameSite:"none",
+        secure:true,
         path:"/"
 
       })
