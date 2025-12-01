@@ -3,44 +3,50 @@ import { useParams } from "react-router-dom"
 import { useForms, useSubmitForms } from "../../hooks/customQuery/form"
 import shouldShowQuestion from "../../utils/showQuestionCOntroller"
 
-const FormPage = () => {
+const FormPage = ({ preview = false }) => {
   const { formID } = useParams()
   const [answers, setAnswers] = useState({})
+  const [errors, setErrors] = useState([])
 
   const { data, isLoading, error } = useForms(formID)
-  const {mutate : submitForm,data:formData}=useSubmitForms()
+  const { mutate: submitForm  } = useSubmitForms()
 
   if (isLoading) return <p>Loading...</p>
   if (error) return <p>Error fetching form</p>
 
   const form = data.value
 
-  const visibleQuestions = form.questions.filter(q =>
-    shouldShowQuestion(q.conditionalRules, answers)
+  const visibleQuestions = form.questions.filter(ques =>
+    shouldShowQuestion(ques.conditionalRules, answers)
   )
-  
-  console.log(form.questions)
-  console.log(formID,answers)
+
   const onSubmit = () => {
+    if (preview) return
+
     const missingRequired = visibleQuestions.filter(
       q => q.required && !answers[q.questionKey]
     )
 
     if (missingRequired.length > 0) {
-      alert("Required fields are missing")
+      setErrors(missingRequired.map(q => q.questionKey))
       return
     }
-    submitForm({formID,answers})
-    console.log("Form valid, answers:", answers)
+
+    setErrors([])
+    submitForm({ formID, answers })
+    alert("Form submitted Successfully !!!")
   }
 
   return (
     <div>
-      <h2>{form.title || "Form"}</h2>
+      <h2>{form.title}</h2>
 
       {visibleQuestions.map(q => (
         <div key={q.questionKey} style={{ marginBottom: "10px" }}>
-          <label>{q.label}</label>
+          <label>
+            {q.label}
+            {q.required && <span style={{ color: "red" }}> *</span>}
+          </label>
           <br />
           <input
             type="text"
@@ -51,10 +57,19 @@ const FormPage = () => {
               }))
             }
           />
+          {errors.includes(q.questionKey) && (
+            <div style={{ color: "red", fontSize: "12px" }}>
+              This field is required
+            </div>
+          )}
         </div>
       ))}
 
-      <button onClick={onSubmit}>Submit</button>
+      {!preview ? (
+        <button onClick={onSubmit}>Submit</button>
+      ) : (
+        <button disabled>Preview Mode</button>
+      )}
     </div>
   )
 }

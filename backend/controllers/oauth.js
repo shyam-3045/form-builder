@@ -23,7 +23,6 @@ exports.oauthLogin = (req, res) => {
       .replace(/\//g, "_")
       .replace(/=+$/, "")
 
-    console.log("OAuth login api called");
 
     res.cookie("airtable_oauth_state", state, {
       httpOnly: true,
@@ -99,7 +98,7 @@ exports.oauthCallback=async(req,res)=>
             }
         })
 
-        console.log("Token Response :",token.data)
+  
         const accessToken = token?.data?.access_token
         const refreshToken = token?.data?.refresh_token
 
@@ -108,7 +107,7 @@ exports.oauthCallback=async(req,res)=>
             Authorization:"Bearer " + accessToken
          }
         })
-        console.log("User Details :",userDetails.data)
+      
         const UserID = userDetails.data.id
         const email =userDetails.data.email
 
@@ -125,27 +124,27 @@ exports.oauthCallback=async(req,res)=>
         upsert :true , new:true
       }
     )
-      console.log("User saved:", user._id)
+ 
 
-      const webhookExists = await webhook.findOne({
-        owner : user._id,
-        baseID: process.env.WEBHOOK_BASE_ID
-      })
+      // const webhookExists = await webhook.findOne({
+      //   owner : user._id,
+      //   baseID: process.env.WEBHOOK_BASE_ID
+      // })
       
-      if(! webhookExists)
-      {
-        const WebHook = await webhookConnection(accessToken)
-        console.log("Webhook :",WebHook)
+      // if(! webhookExists)
+      // {
+      //   const WebHook = await webhookConnection(accessToken)
+      //   console.log("Webhook :",WebHook)
 
-        await webhook.create({
-          baseID: process.env.WEBHOOK_BASE_ID,
-          tableID: process.env.WEBHOOK_TABLE_ID,
-          webhookID: WebHook.id,
-          expirationTime: WebHook.expirationTime,
-          macSecretBase64: WebHook.macSecretBase64,
-          owner: user._id
-        })
-      }
+      //   await webhook.create({
+      //     baseID: process.env.WEBHOOK_BASE_ID,
+      //     tableID: process.env.WEBHOOK_TABLE_ID,
+      //     webhookID: WebHook.id,
+      //     expirationTime: WebHook.expirationTime,
+      //     macSecretBase64: WebHook.macSecretBase64,
+      //     owner: user._id
+      //   })
+      // }
 
 
      
@@ -156,9 +155,10 @@ exports.oauthCallback=async(req,res)=>
         path:"/"
 
       })
+      res.clearCookie("airtable_oauth_state")
+      res.clearCookie("airtable_code_verifier")
     
-
-    return res.status(200).json({ok:true,msg:"Login successfull"})
+      return res.redirect(`${process.env.FRONTEND_URL}/dashboard`)
     } catch (error) {
         console.log("Error occures in oauth callback :",error)
         return res.status(500).json({ok :"false" , msg : "Internal Server Error",error : error.message})

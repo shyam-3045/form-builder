@@ -22,7 +22,7 @@ exports.airtableWebhook = async (req, res) => {
               {
                 deletedInAirTable: false, 
                 answers: recordChange.current?.cellValuesByFieldId || {},
-                createdAt: new Date(), 
+                updatedAt: new Date(), 
               }
             );
           }
@@ -34,7 +34,7 @@ exports.airtableWebhook = async (req, res) => {
               { airtableRecordId: recordId },
               {
                 deletedInAirTable: true, 
-                createdAt: new Date(),
+                updatedAt: new Date(),
               }
             );
           }

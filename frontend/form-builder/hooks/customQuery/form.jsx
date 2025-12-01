@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getMyForms, submitForms } from "../services/form";
+import { getAllForms, getMyForms, getResponses, submitForms } from "../services/form";
 
 export const useForms = (formID) => {
   return useQuery({
@@ -21,3 +21,19 @@ export const useSubmitForms = ()=>
 
     })
 }
+
+export const useAllForms =()=>
+{
+  return useQuery({
+    queryKey:["allforms"],
+    queryFn:()=> getAllForms()
+  })
+}
+
+export const useResponses = (formID) => {
+  return useQuery({
+    queryKey: ["responses", formID],
+    queryFn: () =>getResponses(formID),
+    enabled: !!formID,
+  });
+};

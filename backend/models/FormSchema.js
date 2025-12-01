@@ -27,6 +27,11 @@ const FormSchema = new mongoose.Schema({
         ref: "User",
         required :true
     },
+    title: {
+        type:String,
+        required: true,
+        
+  },
     airtableBaseID :{
         type : String,
         required :true

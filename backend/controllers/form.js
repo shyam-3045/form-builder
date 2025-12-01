@@ -10,10 +10,15 @@ exports.createForm = async(req,res)=>
     try {
         const { airtableBaseId, airtableTableId, questions } = req.body
 
+        if(!questions)
+        {
+            return res.status(400).json({ok:false , msg:"required parameters missing "})
+        }
+
         const formattedQuestions = questions.map(ques => ({
         questionKey: ques.questionKey,
         fieldId: ques.fieldId,
-        label: ques.label,
+        label: ques.label || ques.questionKey,
         type: ques.type,
         required: ques.required || false,
         conditionalRules: ques.conditionalRules
@@ -138,6 +143,24 @@ exports.getFormResponse =async(req,res)=>
         return res.status(200).json({ok:true,msg:"Retrives the form responses successfully !",value:finalFormData})
     } catch (error) {
         console.log("Error occures in getting formresponse  :",error)
-       return res.status(500).json({ok :"false" , msg : "Internal Server Error",error : error.message}) 
+        return res.status(500).json({ok :"false" , msg : "Internal Server Error",error : error.message}) 
     }
+}
+
+exports.getAllForm = async(req,res)=>
+{
+ try {
+
+    const user = req.user._id
+
+    const forms = await Form.find({owner : user},{
+        title : 1,
+        createdAt:1
+    }).sort({ createdAt : -1})
+
+    return res.status(200).json({ok:true,msg:"Retrived all the forms!",value:forms})
+ } catch (error) {
+    console.log("Error occures in getting formresponse  :",error)
+    return res.status(500).json({ok :"false" , msg : "Internal Server Error",error : error.message})
+ }
 }
