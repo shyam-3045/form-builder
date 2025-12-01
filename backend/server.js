@@ -19,7 +19,9 @@ app.use(urlencoded({extended:true}))
 app.use(cookieParser())
 app.use(express.json())
 
-
+app.get("/", (req, res) => {
+  res.status(200).send("OK");
+});
 app.use("/auth",require("./routes/oauth"))
 app.use("/airtable",require("./routes/bases"))
 app.use("/airtable",require("./routes/form"))
