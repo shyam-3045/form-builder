@@ -9,10 +9,10 @@ const FormPage = ({ preview = false }) => {
   const [errors, setErrors] = useState([])
 
   const { data, isLoading, error } = useForms(formID)
-  const { mutate: submitForm  } = useSubmitForms()
+  const { mutate: submitForm } = useSubmitForms()
 
-  if (isLoading) return <p>Loading...</p>
-  if (error) return <p>Error fetching form</p>
+  if (isLoading) return <p className="loading-text">Loading...</p>
+  if (error) return <p className="error-text">Error fetching form</p>
 
   const form = data.value
 
@@ -38,17 +38,20 @@ const FormPage = ({ preview = false }) => {
   }
 
   return (
-    <div>
-      <h2>{form.title}</h2>
+    <div id="form-page">
+      <h2 className="form-page-title">{form.title}</h2>
 
       {visibleQuestions.map(q => (
-        <div key={q.questionKey} style={{ marginBottom: "10px" }}>
-          <label>
+        <div key={q.questionKey} className="question-block">
+          <label className="question-label">
             {q.label}
-            {q.required && <span style={{ color: "red" }}> *</span>}
+            {q.required && <span className="required">*</span>}
           </label>
-          <br />
+
           <input
+            className={`question-input ${
+              errors.includes(q.questionKey) ? "input-error" : ""
+            }`}
             type="text"
             onChange={e =>
               setAnswers(prev => ({
@@ -57,8 +60,9 @@ const FormPage = ({ preview = false }) => {
               }))
             }
           />
+
           {errors.includes(q.questionKey) && (
-            <div style={{ color: "red", fontSize: "12px" }}>
+            <div className="error-text small">
               This field is required
             </div>
           )}
@@ -66,9 +70,9 @@ const FormPage = ({ preview = false }) => {
       ))}
 
       {!preview ? (
-        <button onClick={onSubmit}>Submit</button>
+        <button className="form-button" onClick={onSubmit}>Submit</button>
       ) : (
-        <button disabled>Preview Mode</button>
+        <button className="form-button disabled" disabled>Preview Mode</button>
       )}
     </div>
   )

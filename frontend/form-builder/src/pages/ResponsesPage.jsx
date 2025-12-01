@@ -7,37 +7,61 @@ import ExportCSV from '../functions/ExportCSV'
 const ResponsesPage = () => {
     const { formID } = useParams()
     const {data : responses , isLoading,isError,error }=useResponses(formID)
+
     if (isLoading)
     {
-        return <p>...Loading</p>
+        return <p className="loading-text">...Loading</p>
     }
     if(isError)
     {
-        return <p> {error.message} </p>
+        return <p className="error-text">{error.message}</p>
     }
-    return (
-    <div>
-      <h2>Responses</h2>
 
-      {responses.value.length === 0 && <p>No responses found !</p>}
+    return (
+    <div id="responses-page">
+      <h2 className="responses-title">Responses</h2>
+
+      {responses.value.length === 0 && (
+        <p className="empty-text">No responses found !</p>
+      )}
 
       {responses.value.map(res => (
-        <div key={res.submissionId} style={{ marginBottom: "12px" }}>
-          <div><strong>ID:</strong> {res.submissionId}</div>
-          <div><strong>Created:</strong> {new Date(res.createdAt).toLocaleString()}</div>
-          <div><strong>Status:</strong> {res.status}</div>
-          <div><strong>Preview:</strong> {res.AnswerPreview}</div>
-          <hr />
+        <div key={res.submissionId} className="response-card">
+          <div className="response-row">
+            <span className="response-label">ID</span>
+            <span>{res.submissionId}</span>
+          </div>
+
+          <div className="response-row">
+            <span className="response-label">Created</span>
+            <span>{new Date(res.createdAt).toLocaleString()}</span>
+          </div>
+
+          <div className="response-row">
+            <span className="response-label">Status</span>
+            <span>{res.status}</span>
+          </div>
+
+          <div className="response-row">
+            <span className="response-label">Preview</span>
+            <span>{res.AnswerPreview}</span>
+          </div>
         </div>
       ))}
-      <h3>Exports :</h3>
-      <button onClick={() => ExportJSON(responses.value)}>
-             Export JSON
-      </button>
 
-      <button onClick={() => ExportCSV(responses.value)}>
+      <div className="export-section">
+        <h3 className="export-title">Exports</h3>
+
+        <div className="export-buttons">
+          <button className="export-button" onClick={() => ExportJSON(responses.value)}>
+            Export JSON
+          </button>
+
+          <button className="export-button" onClick={() => ExportCSV(responses.value)}>
             Export CSV
-       </button>
+          </button>
+        </div>
+      </div>
     </div>
   )
 }
