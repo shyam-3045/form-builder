@@ -79,48 +79,48 @@ exports.submitForm=async(req,res)=>
             shouldShowQuestion(ques.conditionalRules,answers)
         )
 
-        for (const ques of visibleQuestions)
-        {
+        for (const ques of visibleQuestions) {
             const value = answers[ques.questionKey]
-            if (ques.required && (value === undefined || value === null || value === ""))
-            {
-                return res.status(400).json({ok:false,msg:"required questions are missing"})
-            }
-        }
 
-        if (ques.type === "singleSelect") {
-            if (value !== undefined) {
-                const allowed = ques.options.choices.map(c => c.name)
+            
+            if (ques.required && (value === undefined || value === null || value === "")) {
+                return res.status(400).json({
+                ok: false,
+                msg: "required questions are missing"
+                })
+            }
+
+          
+            if (ques.type === "singleSelect" && value !== undefined) {
+                const allowed = ques.options?.choices?.map(c => c.name) || []
                 if (!allowed.includes(value)) {
-                    return res.status(400).json({
-                        ok: false,
-                        msg: "Invalid single select value"
-                    })
+                return res.status(400).json({
+                    ok: false,
+                    msg: "Invalid single select value"
+                })
                 }
             }
-        }
 
-        if (ques.type === "multiSelect") {
-            if (value !== undefined) {
+           
+            if (ques.type === "multiSelect" && value !== undefined) {
                 if (!Array.isArray(value)) {
-                    return res.status(400).json({
-                        ok: false,
-                        msg: "Invalid multi select value"
-                    })
+                return res.status(400).json({
+                    ok: false,
+                    msg: "Invalid multi select value"
+                })
                 }
 
-                const allowed = ques.options.choices.map(c => c.name)
+                const allowed = ques.options?.choices?.map(c => c.name) || []
                 const invalid = value.filter(v => !allowed.includes(v))
 
                 if (invalid.length > 0) {
-                    return res.status(400).json({
-                        ok: false,
-                        msg: "Invalid multi select value"
-                    })
+                return res.status(400).json({
+                    ok: false,
+                    msg: "Invalid multi select value"
+                })
                 }
             }
-        }
-
+            }
 
         const fields={}
         for(const ques of visibleQuestions)
