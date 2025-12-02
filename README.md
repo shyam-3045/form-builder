@@ -315,9 +315,9 @@ This appears to be a configuration / delivery issue outside the application logi
 7. Responses are saved in Airtable and MongoDB.
 8. Airtable webhooks are registered to keep data in sync.
 
-🔗 Deployed Frontend: https://form-builder-omega-ten.vercel.app
-🔗 Deployed Backend: https://form-builder-rigm.onrender.com 
-🎥 Demo Video: https://youtu.be/H3lLaxPKYOM
+- 🔗 Deployed Frontend: https://form-builder-omega-ten.vercel.app
+- 🔗 Deployed Backend: https://form-builder-rigm.onrender.com 
+- 🎥 Demo Video: https://youtu.be/Shw5BUtuHpQ
 
 
 
